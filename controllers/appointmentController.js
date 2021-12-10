@@ -72,7 +72,7 @@ exports.updateAppointment = catchAsync(async (req, res, next) => {
 
     updatedAppointment.date = req.body.date || updatedAppointment.date
     updatedAppointment.note = req.body.note || updatedAppointment.note
-    await updatedAppointment.save({ validateBeforeSave: false })
+    await updatedAppointment.save({ validateBeforeSave: true })
 
     res.status(202).json({
         message: 'success',

@@ -12,7 +12,7 @@ router.route('/')
     .get(appointmentController.getAllAppointments)
 
 // ROUTES BELLOW ARE PACIENT DEPENDENT //NEED TO MERGE PARAMS OR BETTER SOLUTION
-router.route('/:pacientId')
+router.route('/pacient/:pacientId')
     .post(appointmentController.createAppointment)
     .get(appointmentController.getPacientAppointments)
 
