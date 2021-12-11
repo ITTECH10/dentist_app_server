@@ -20,6 +20,7 @@ exports.createAppointment = catchAsync(async (req, res, next) => {
 
     const newAppointment = await Appointment.create({
         pacientId,
+        employeeId: req.user._id,
         date: req.body.date,
         note: req.body.note,
     })

@@ -4,6 +4,9 @@ const appointmentSchema = new mongoose.Schema({
     pacientId: {
         type: mongoose.Schema.ObjectId
     },
+    employeeId: {
+        type: mongoose.Schema.ObjectId
+    },
     date: {
         type: Date
     },
