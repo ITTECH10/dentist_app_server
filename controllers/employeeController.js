@@ -30,6 +30,19 @@ exports.getOneEmployee = catchAsync(async (req, res, next) => {
     })
 })
 
+exports.getLogedInEmployees = catchAsync(async (req, res, next) => {
+    const employee = await Employee.findOne({ _id: req.user._id })
+
+    if (!employee) {
+        return next(new AppError('Vaš račun nije pronađen.', 404))
+    }
+
+    res.status(200).json({
+        message: 'success',
+        employee
+    })
+})
+
 exports.updateEmployeeBaseInfo = catchAsync(async (req, res, next) => {
     const { employeeId } = req.params
     const updatedEmployee = await Employee.findOne({ _id: employeeId })

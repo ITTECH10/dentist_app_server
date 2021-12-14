@@ -6,14 +6,20 @@ const pacientRouter = require('./routers/PacientRouter')
 const employeeRouter = require('./routers/EmployeeRouter')
 const appointmentRouter = require('./routers/AppointmentRouter')
 const cookieParser = require('cookie-parser')
+const os = require('os')
+const fileupload = require('express-fileupload')
 
 const origin = process.env.NODE_ENV === 'production' ? 'https://dentist-client-app.vercel.app' : 'http://localhost:3000'
 
 // CORS
 app.use(cors({ credentials: true, origin }))
-app.use(express.json())
-
 app.use(cookieParser())
+
+app.use(express.json())
+app.use(fileupload({
+    useTempFiles: true,
+    tempFileDir: os.tmpdir()
+}));
 
 app.use('/api/v1/pacients', pacientRouter)
 app.use('/api/v1/employees', employeeRouter)

@@ -19,6 +19,10 @@ const employeeSchema = new mongoose.Schema({
     },
     role: {
         type: String,
+        enum: {
+            values: ['director', 'assistant', 'deputy'],
+            message: '{VALUE} pozicija nije podržana!'
+        },
         default: 'assistant'
     },
     email: {

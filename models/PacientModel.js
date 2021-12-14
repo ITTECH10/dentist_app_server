@@ -11,9 +11,16 @@ const pacientSchema = new mongoose.Schema({
         type: Date
     },
     gender: {
-        type: String
+        type: String,
+        enum: {
+            values: ['male', 'female'],
+            message: '{VALUE} nije spol!'
+        },
     },
     phone: {
+        type: String
+    },
+    pacientImage: {
         type: String
     }
 })

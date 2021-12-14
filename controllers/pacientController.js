@@ -8,7 +8,8 @@ exports.addPacient = catchAsync(async (req, res, next) => {
         lastName: req.body.lastName,
         birthDate: req.body.birthDate,
         gender: req.body.gender,
-        phone: req.body.phone
+        phone: req.body.phone,
+        pacientImage: req.files ? req.files.image : req.body.pacientImage,
     })
 
     res.status(201).json({

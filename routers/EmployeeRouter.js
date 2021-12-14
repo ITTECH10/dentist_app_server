@@ -7,9 +7,12 @@ const router = express.Router()
 router.route('/login')
     .post(authController.login)
 
-// SUPER_ADMIN ONLY
 router.use(authController.protect)
-router.use(authController.restrictTo('superAdmin'))
+router.route('/me')
+    .get(employeeController.getLogedInEmployees)
+
+// ROLE PERMISSIONS FOR BELLOW ROUTES
+router.use(authController.restrictTo('director'))
 
 router.route('/signup')
     .post(authController.signup)

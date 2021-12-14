@@ -6,7 +6,7 @@ const router = express.Router({ mergeParams: true })
 
 // RESTRICTIONS
 router.use(authController.protect)
-router.use(authController.restrictTo('superAdmin', 'admin', 'assistant'))
+router.use(authController.restrictTo('director', 'deputy', 'assistant'))
 
 router.route('/')
     .get(appointmentController.getAllAppointments)
