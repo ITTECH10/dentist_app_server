@@ -22,6 +22,10 @@ const pacientSchema = new mongoose.Schema({
     },
     pacientImage: {
         type: String
+    },
+    checked: {
+        type: Boolean,
+        default: false
     }
 })
 

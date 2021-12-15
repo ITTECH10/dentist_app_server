@@ -14,7 +14,8 @@ exports.signup = catchAsync(async (req, res, next) => {
         phone: req.body.phone,
         role: req.body.role,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        employeeImage: req.files ? req.files.image : req.body.employeeImage
     })
 
     res.status(201).json({
@@ -37,6 +38,27 @@ exports.login = catchAsync(async (req, res, next) => {
     }
 
     createSendToken(employee, 200, res)
+})
+
+exports.logout = catchAsync(async (req, res, next) => {
+    const cookieOptions = {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true,
+        // sameSite: 'None',
+        // secure: false
+        // secure: req.secure || req.headers['x-forwarded-proto'] === 'https'
+    }
+
+    if (process.env.NODE_ENV === 'production') {
+        cookieOptions.sameSite = 'none'
+        cookieOptions.secure = true
+    }
+
+    res.cookie('jwt', '', cookieOptions);
+
+    res.status(200).json({
+        message: 'success'
+    });
 })
 
 exports.protect = catchAsync(async (req, res, next) => {

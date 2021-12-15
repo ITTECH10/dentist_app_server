@@ -1,11 +1,14 @@
 const express = require('express')
 const authController = require('./../controllers/authController')
 const employeeController = require('./../controllers/employeeController')
+const commonController = require('./../controllers/commonController')
 
 const router = express.Router()
 
 router.route('/login')
     .post(authController.login)
+router.route('/logout')
+    .post(authController.logout)
 
 router.use(authController.protect)
 router.route('/me')
@@ -15,7 +18,7 @@ router.route('/me')
 router.use(authController.restrictTo('director'))
 
 router.route('/signup')
-    .post(authController.signup)
+    .post(commonController.checkForFiles, authController.signup)
 
 router.route('/')
     .get(employeeController.getAllEmployees)

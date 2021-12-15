@@ -12,7 +12,11 @@ const employeeSchema = new mongoose.Schema({
         type: Date
     },
     gender: {
-        type: String
+        type: String,
+        enum: {
+            values: ['male', 'female'],
+            message: '{VALUE} nije spol!'
+        },
     },
     phone: {
         type: String
@@ -32,6 +36,9 @@ const employeeSchema = new mongoose.Schema({
     password: {
         type: String,
         select: false
+    },
+    employeeImage: {
+        type: String
     }
 })
 
