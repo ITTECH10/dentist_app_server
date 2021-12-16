@@ -18,7 +18,7 @@ router.route('/')
 
 router.route('/:pacientId')
     .get(pacientController.getOnePacient)
-    .put(pacientController.updatePacientBaseInfo)
+    .put(commonController.checkForFiles, pacientController.updatePacientBaseInfo)
     .delete(pacientController.deletePacient)
 
 module.exports = router

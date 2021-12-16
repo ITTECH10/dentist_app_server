@@ -51,14 +51,28 @@ exports.getOnePacient = catchAsync(async (req, res, next) => {
 exports.updatePacientBaseInfo = catchAsync(async (req, res, next) => {
     const { pacientId } = req.params
     const updatedPacient = await Pacient.findOne({ _id: pacientId })
+    const publicId = updatedPacient.pacientImage.split('/')[7].split('.')[0]
 
-    updatedPacient.firstName = req.body.firstName || updatedPacient.firstName
-    updatedPacient.lastName = req.body.lastName || updatedPacient.lastName
-    updatedPacient.birthDate = req.body.birthDate || updatedPacient.birthDate
-    updatedPacient.gender = req.body.gender || updatedPacient.gender
-    updatedPacient.phone = req.body.phone || updatedPacient.phone
+    try {
+        updatedPacient.firstName = req.body.firstName || updatedPacient.firstName
+        updatedPacient.lastName = req.body.lastName || updatedPacient.lastName
+        updatedPacient.birthDate = req.body.birthDate || updatedPacient.birthDate
+        updatedPacient.gender = req.body.gender || updatedPacient.gender
+        updatedPacient.phone = req.body.phone || updatedPacient.phone
+        updatedPacient.address = req.body.address || updatedPacient.address
+        updatedPacient.pacientImage = req.files ? req.files.image : updatedPacient.pacientImage
 
-    await updatedPacient.save({ validateBeforeSave: true })
+        await cloudinary.api.delete_resources(publicId, { invalidate: true },
+            function (error, result) {
+                if (error) {
+                    console.log(error)
+                }
+            });
+
+        await updatedPacient.save({ validateBeforeSave: true })
+    } catch (err) {
+        console.log(err)
+    }
 
     res.status(200).json({
         message: 'success',
