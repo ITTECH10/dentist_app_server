@@ -1,6 +1,7 @@
 const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const Pacient = require('./../models/PacientModel')
+const cloudinary = require('cloudinary').v2
 
 exports.addPacient = catchAsync(async (req, res, next) => {
     const pacient = await Pacient.create({
@@ -67,8 +68,25 @@ exports.updatePacientBaseInfo = catchAsync(async (req, res, next) => {
 
 exports.deletePacient = catchAsync(async (req, res, next) => {
     const { pacientId } = req.params
+    const pacient = await Pacient.findOne({ _id: pacientId })
+    const publicId = pacient.pacientImage.split('/')[7].split('.')[0]
 
-    await Pacient.findByIdAndDelete(pacientId)
+    if (!pacient) {
+        return next(new AppError('Pacijenta nije moguće obrisati. Za pomoć kontaktirajte korisničku podršku.', 404))
+    }
+
+    try {
+        await Pacient.findByIdAndDelete(pacientId)
+
+        await cloudinary.api.delete_resources(publicId, { invalidate: true },
+            function (error, result) {
+                if (error) {
+                    console.log(error)
+                }
+            });
+    } catch (err) {
+        console.log(err)
+    }
 
     res.status(204).json({
         message: 'success'
