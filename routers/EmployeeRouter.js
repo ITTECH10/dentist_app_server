@@ -15,7 +15,7 @@ router.route('/me')
     .get(employeeController.getLogedInEmployees)
 
 // ROLE PERMISSIONS FOR BELLOW ROUTES
-router.use(authController.restrictTo('director'))
+router.use(authController.restrictTo('director', 'deputy'))
 
 router.route('/signup')
     .post(commonController.checkForFiles, authController.signup)
