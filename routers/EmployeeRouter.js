@@ -26,7 +26,7 @@ router.route('/')
 router.route('/:employeeId')
     .get(employeeController.getOneEmployee)
     .delete(employeeController.deleteEmployee)
-    .put(employeeController.updateEmployeeBaseInfo)
+    .put(commonController.checkForFiles, employeeController.updateEmployeeBaseInfo)
 
 
 module.exports = router

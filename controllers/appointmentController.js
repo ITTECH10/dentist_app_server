@@ -32,7 +32,8 @@ exports.createAppointment = catchAsync(async (req, res, next) => {
 })
 
 exports.getAllAppointments = catchAsync(async (req, res, next) => {
-    const appointments = await Appointment.find()
+    // Get last 25 appointments always
+    const appointments = await Appointment.find().limit(50).sort({ date: 1 })
 
     if (!appointments) {
         return next(new AppError('Nijedan termin nije pronađen.'))
