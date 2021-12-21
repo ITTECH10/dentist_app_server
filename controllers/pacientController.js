@@ -1,6 +1,7 @@
 const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const Pacient = require('./../models/PacientModel')
+const Appointment = require('./../models/AppointmentModel')
 const cloudinary = require('cloudinary').v2
 
 exports.addPacient = catchAsync(async (req, res, next) => {
@@ -45,6 +46,24 @@ exports.getOnePacient = catchAsync(async (req, res, next) => {
     res.status(200).json({
         message: 'success',
         pacient
+    })
+})
+
+// CONSIDER MOVING TO PACIENTS_CONTROLLER
+exports.getPacientAppointments = catchAsync(async (req, res, next) => {
+    const { pacientId } = req.params
+    const pacient = await Pacient.findOne({ _id: pacientId })
+
+    if (!pacient) {
+        return next(new AppError('Pacijent povezan sa ovim terminima nije pronađen.', 404))
+    }
+
+    const pacientAppointments = await Appointment.find({ pacientId })
+
+    res.status(200).json({
+        message: 'success',
+        numberOfResults: pacientAppointments.length,
+        pacientAppointments
     })
 })
 

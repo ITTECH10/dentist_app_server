@@ -12,12 +12,13 @@ router.route('/')
     .get(appointmentController.getAllAppointments)
     .post(appointmentController.createAppointment)
 
-// ROUTES BELLOW ARE PACIENT DEPENDENT //NEED TO MERGE PARAMS OR BETTER SOLUTION
-router.route('/:pacientId')
-    .get(appointmentController.getPacientAppointments)
-
 router.route('/:appointmentId')
+    .get(appointmentController.getOneAppointment)
     .put(appointmentController.updateAppointment)
     .delete(appointmentController.deleteAppointment)
+
+// ROUTES BELLOW ARE PACIENT DEPENDENT //NEED TO MERGE PARAMS OR BETTER SOLUTION
+// router.route('/:pacientId')
+//     .get(appointmentController.getPacientAppointments)
 
 module.exports = router

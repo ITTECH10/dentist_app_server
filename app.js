@@ -5,6 +5,7 @@ const AppError = require('./utils/appError')
 const pacientRouter = require('./routers/PacientRouter')
 const employeeRouter = require('./routers/EmployeeRouter')
 const appointmentRouter = require('./routers/AppointmentRouter')
+const diagnosisRouter = require('./routers/DiagnosisRouter')
 const cookieParser = require('cookie-parser')
 const os = require('os')
 const fileupload = require('express-fileupload')
@@ -24,6 +25,7 @@ app.use(fileupload({
 app.use('/api/v1/pacients', pacientRouter)
 app.use('/api/v1/employees', employeeRouter)
 app.use('/api/v1/appointments', appointmentRouter)
+app.use('/api/v1/diagnosis', diagnosisRouter)
 
 app.all('*', (req, res, next) => {
     next(new AppError(`The requested url ${req.originalUrl} could not be found.`, 404))

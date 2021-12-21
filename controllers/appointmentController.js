@@ -27,7 +27,8 @@ exports.createAppointment = catchAsync(async (req, res, next) => {
 
     res.status(201).json({
         message: 'success',
-        newAppointment
+        newAppointment,
+        pacientName: `${pacient.firstName} ${pacient.lastName}`
     })
 })
 
@@ -46,25 +47,16 @@ exports.getAllAppointments = catchAsync(async (req, res, next) => {
     })
 })
 
-// CONSIDER MOVING TO PACIENTS_CONTROLLER
-exports.getPacientAppointments = catchAsync(async (req, res, next) => {
-    const { pacientId } = req.params
-    const pacient = await Pacient.findOne({ _id: pacientId })
+exports.getOneAppointment = catchAsync(async (req, res, next) => {
+    const { appointmentId } = req.params
+    const appointment = await Appointment.findOne({ _id: appointmentId })
 
-    if (!pacient) {
-        return next(new AppError('Pacijent povezan sa ovim terminima nije pronađen.', 404))
+    if (!appointment) {
+        return next(new AppError('Termin nije pronađen.', 404))
     }
-
-    if (!pacient._id.equals(pacientId)) {
-        return next(new AppError('Dogodila se greška.', 500))
-    }
-
-    const pacientAppointments = await Appointment.find({ pacientId })
 
     res.status(200).json({
-        message: 'success',
-        numberOfResults: pacientAppointments.length,
-        pacientAppointments
+        appointment
     })
 })
 
@@ -72,11 +64,12 @@ exports.updateAppointment = catchAsync(async (req, res, next) => {
     const { appointmentId } = req.params
     const updatedAppointment = await Appointment.findOne({ _id: appointmentId })
 
+    updatedAppointment.pacientId = req.body.pacientId || updatedAppointment.pacientId
     updatedAppointment.date = req.body.date || updatedAppointment.date
     updatedAppointment.note = req.body.note || updatedAppointment.note
     await updatedAppointment.save({ validateBeforeSave: true })
 
-    res.status(202).json({
+    res.status(200).json({
         message: 'success',
         updatedAppointment
     })
