@@ -38,6 +38,7 @@ exports.getAllPacients = catchAsync(async (req, res, next) => {
 exports.getOnePacient = catchAsync(async (req, res, next) => {
     const { pacientId } = req.params
     const pacient = await Pacient.findOne({ _id: pacientId })
+        .populate('diagnosis', 'date kind tooth ordination -pacientId _id')
 
     if (!pacient) {
         return next(new AppError('Pacijent nije pronađen.', 404))

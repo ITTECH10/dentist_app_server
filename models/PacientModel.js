@@ -30,7 +30,22 @@ const pacientSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 })
+
+pacientSchema.virtual('appointments', {
+    ref: 'Appointment',
+    foreignField: 'pacientId',
+    localField: '_id'
+});
+
+pacientSchema.virtual('diagnosis', {
+    ref: 'Diagnosis',
+    foreignField: 'pacientId',
+    localField: '_id'
+});
 
 const Pacient = mongoose.model('Pacient', pacientSchema)
 

@@ -9,14 +9,11 @@ router.use(authController.protect)
 
 router.route('/')
     .post(commonController.checkForFiles, diagnosisController.createDiagnosis)
-    .get(diagnosisController.getPacientDiagnosis)
+    .get(diagnosisController.getAllDiagnosis)
 
 router.route('/:diagnosisId')
     .get(diagnosisController.getOneDiagnosis)
     .put(commonController.checkForFiles, diagnosisController.updateDiagnosis)
     .delete(diagnosisController.deleteDiagnosis)
-
-router.route('/all')
-    .get(diagnosisController.getAllDiagnosis)
 
 module.exports = router

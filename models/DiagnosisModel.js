@@ -30,8 +30,8 @@ const diagnosisSchema = mongoose.Schema({
 })
 
 diagnosisSchema.pre(/^find/, function (next) {
-    this.populate('employeeId', 'firstName lastName -_id')
-    this.populate('pacientId', 'firstName lastName -_id')
+    this.populate('employeeId', 'firstName lastName _id')
+    this.populate('pacientId', 'firstName lastName _id')
     next()
 })
 

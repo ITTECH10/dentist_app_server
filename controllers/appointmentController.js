@@ -14,10 +14,6 @@ exports.createAppointment = catchAsync(async (req, res, next) => {
         return next(new AppError('Dogodila se greška pri dodavanju termina za ovog pacijenta.', 404))
     }
 
-    if (!pacient._id.equals(pacientId)) {
-        return next(new AppError('Dogodila se greška.', 500))
-    }
-
     const newAppointment = await Appointment.create({
         pacientId,
         employeeId: req.user._id,
@@ -64,9 +60,10 @@ exports.updateAppointment = catchAsync(async (req, res, next) => {
     const { appointmentId } = req.params
     const updatedAppointment = await Appointment.findOne({ _id: appointmentId })
 
-    updatedAppointment.pacientId = req.body.pacientId || updatedAppointment.pacientId
+    updatedAppointment.pacientId = req.body.pacientId || updatedAppointment.pacientId._id
     updatedAppointment.date = req.body.date || updatedAppointment.date
     updatedAppointment.note = req.body.note || updatedAppointment.note
+
     await updatedAppointment.save({ validateBeforeSave: true })
 
     res.status(200).json({

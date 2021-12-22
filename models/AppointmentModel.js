@@ -18,7 +18,7 @@ const appointmentSchema = new mongoose.Schema({
 })
 
 appointmentSchema.pre(/^find/, function (next) {
-    this.populate('pacientId', 'firstName lastName -_id')
+    this.populate('pacientId', 'firstName lastName')
     next()
 })
 
