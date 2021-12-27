@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser')
 const os = require('os')
 const fileupload = require('express-fileupload')
 
-const origin = process.env.NODE_ENV === 'production' ? 'https://dentist-n2p5j4fk5-ittech10.vercel.app' : 'http://localhost:3000'
+const origin = process.env.NODE_ENV === 'production' ? 'https://dentist-app-client.vercel.app' : 'http://localhost:3000'
 
 // CORS
 app.use(cors({ credentials: true, origin }))
