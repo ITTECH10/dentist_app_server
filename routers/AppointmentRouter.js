@@ -8,6 +8,9 @@ const router = express.Router({ mergeParams: true })
 router.use(authController.protect)
 router.use(authController.restrictTo('director', 'deputy', 'assistant'))
 
+router.route('/upcoming')
+    .get(appointmentController.getUpcomingAppointments)
+
 router.route('/')
     .get(appointmentController.getAllAppointments)
     .post(appointmentController.createAppointment)

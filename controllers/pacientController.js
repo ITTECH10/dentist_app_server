@@ -71,7 +71,6 @@ exports.getPacientAppointments = catchAsync(async (req, res, next) => {
 exports.updatePacientBaseInfo = catchAsync(async (req, res, next) => {
     const { pacientId } = req.params
     const updatedPacient = await Pacient.findOne({ _id: pacientId })
-    const publicId = updatedPacient.pacientImage.split('/')[7].split('.')[0]
 
     try {
         updatedPacient.firstName = req.body.firstName || updatedPacient.firstName
@@ -80,14 +79,18 @@ exports.updatePacientBaseInfo = catchAsync(async (req, res, next) => {
         updatedPacient.gender = req.body.gender || updatedPacient.gender
         updatedPacient.phone = req.body.phone || updatedPacient.phone
         updatedPacient.address = req.body.address || updatedPacient.address
-        updatedPacient.pacientImage = req.files ? req.files.image : updatedPacient.pacientImage
 
-        await cloudinary.api.delete_resources(publicId, { invalidate: true },
-            function (error, result) {
-                if (error) {
-                    console.log(error)
-                }
-            });
+        if (req.files) {
+            const publicId = updatedPacient.pacientImage.split('/')[7].split('.')[0]
+            updatedPacient.pacientImage = req.files.image || updatedPacient.pacientImage
+
+            await cloudinary.api.delete_resources(publicId, { invalidate: true },
+                function (error, result) {
+                    if (error) {
+                        console.log(error)
+                    }
+                });
+        }
 
         await updatedPacient.save({ validateBeforeSave: true })
     } catch (err) {

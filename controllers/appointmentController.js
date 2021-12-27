@@ -2,6 +2,7 @@ const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/appError')
 const Appointment = require('../models/AppointmentModel')
 const Pacient = require('../models/PacientModel')
+const DateGenerator = require('../utils/DateGenerator')
 
 // TODO:
 // LATER IMPLEMENT BETTER ROUTE SECURITY
@@ -79,5 +80,22 @@ exports.deleteAppointment = catchAsync(async (req, res, next) => {
 
     res.status(204).json({
         message: 'success'
+    })
+})
+
+exports.getUpcomingAppointments = catchAsync(async (req, res, next) => {
+    // DO IT IN AGGREGATION // OR NOT (language agnostic)
+    // 1) Get all appointments where date is > NOW and  <= one month from now
+    const monthsFromNow = new DateGenerator().monthsFromNow(1)
+
+    const results = await Appointment.aggregate([
+        {
+            $match: { date: { $gte: new Date(), $lte: monthsFromNow } }
+        }
+    ])
+
+    res.status(200).json({
+        message: 'success',
+        results
     })
 })

@@ -47,7 +47,6 @@ exports.getLogedInEmployees = catchAsync(async (req, res, next) => {
 exports.updateEmployeeBaseInfo = catchAsync(async (req, res, next) => {
     const { employeeId } = req.params
     const updatedEmployee = await Employee.findOne({ _id: employeeId })
-    const publicId = updatedEmployee.employeeImage.split('/')[7].split('.')[0]
 
     try {
         updatedEmployee.firstName = req.body.firstName || updatedEmployee.firstName
@@ -55,15 +54,19 @@ exports.updateEmployeeBaseInfo = catchAsync(async (req, res, next) => {
         updatedEmployee.birthDate = req.body.birthDate || updatedEmployee.birthDate
         updatedEmployee.gender = req.body.gender || updatedEmployee.gender
         updatedEmployee.phone = req.body.phone || updatedEmployee.phone
-        updatedEmployee.employeeImage = req.files ? req.files.image : updatedEmployee.employeeImage
         updatedEmployee.role = req.body.role || updatedEmployee.role
 
-        await cloudinary.api.delete_resources(publicId, { invalidate: true },
-            function (error, result) {
-                if (error) {
-                    console.log(error)
-                }
-            });
+        if (req.files) {
+            const publicId = updatedEmployee.employeeImage.split('/')[7].split('.')[0]
+            updatedEmployee.employeeImage = req.files.image || updatedEmployee.employeeImage
+
+            await cloudinary.api.delete_resources(publicId, { invalidate: true },
+                function (error, result) {
+                    if (error) {
+                        console.log(error)
+                    }
+                });
+        }
 
         await updatedEmployee.save({ validateBeforeSave: true })
     } catch (error) {

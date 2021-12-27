@@ -75,10 +75,21 @@ exports.updateDiagnosis = catchAsync(async (req, res, next) => {
     diagnosis.employeeId = req.body.employeeId || diagnosis.employeeId._id
     diagnosis.date = req.body.date || diagnosis.date
     diagnosis.summary = req.body.summary || diagnosis.summary
-    diagnosis.image = req.files ? req.files.image : diagnosis.image
     diagnosis.kind = req.body.kind || diagnosis.kind
     diagnosis.ordination = req.body.ordination || diagnosis.ordination
     diagnosis.tooth = req.body.tooth || diagnosis.tooth
+
+    if (req.files) {
+        const publicId = diagnosis.image.split('/')[7].split('.')[0]
+        diagnosis.image = req.files.image || diagnosis.image
+
+        await cloudinary.api.delete_resources(publicId, { invalidate: true },
+            function (error, result) {
+                if (error) {
+                    console.log(error)
+                }
+            });
+    }
 
     await diagnosis.save({ validateBeforeSave: false })
 
