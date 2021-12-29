@@ -129,3 +129,27 @@ exports.deleteDiagnosis = catchAsync(async (req, res, next) => {
         message: 'success'
     })
 })
+
+exports.bulkDeleteDiagnosis = catchAsync(async (req, res, next) => {
+    const { ids } = req.body
+
+    ids.map(async diagnosisId => {
+        const diagnosis = await Diagnosis.findById(diagnosisId)
+        await Diagnosis.deleteOne({ _id: diagnosis._id })
+
+        if (diagnosis.image) {
+            const publicId = diagnosis.image.split('/')[7].split('.')[0]
+
+            await cloudinary.api.delete_resources(publicId, { invalidate: true },
+                function (error, result) {
+                    if (error) {
+                        console.log(error)
+                    }
+                });
+        }
+    })
+
+    res.status(204).json({
+        message: 'success'
+    })
+})

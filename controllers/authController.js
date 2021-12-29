@@ -114,8 +114,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     }
 
     const resetToken = employee.createPasswordResetToken()
-    // const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
-    const resetURL = `https://dentist-app-client.vercel.app/resetPassword/${resetToken}`
+    const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
+    // const resetURL = `https://dentist-app-client.vercel.app/resetPassword/${resetToken}`
 
     await employee.save({ validateBeforeSave: false })
 

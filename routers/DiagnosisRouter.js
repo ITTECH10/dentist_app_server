@@ -11,6 +11,9 @@ router.route('/')
     .post(commonController.checkForFiles, diagnosisController.createDiagnosis)
     .get(diagnosisController.getAllDiagnosis)
 
+router.route('/deleteMultiple')
+    .delete(diagnosisController.bulkDeleteDiagnosis)
+
 router.route('/:diagnosisId')
     .get(diagnosisController.getOneDiagnosis)
     .put(commonController.checkForFiles, diagnosisController.updateDiagnosis)
