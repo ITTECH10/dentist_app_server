@@ -4,6 +4,8 @@ const Employee = require('../models/EmployeeModel')
 const createSendToken = require('../utils/signToken')
 const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
+const Email = require('./../utils/nodemailer')
+const crypto = require('crypto')
 
 exports.signup = catchAsync(async (req, res, next) => {
     const newEmployee = await Employee.create({
@@ -103,3 +105,55 @@ exports.restrictTo = (...roles) => {
         next();
     }
 }
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+    const employee = await Employee.findOne({ email: req.body.email })
+
+    if (!employee) {
+        return next(new AppError('Zaposlenik povezan sa ovom email adresom ne postoji.', 404))
+    }
+
+    const resetToken = employee.createPasswordResetToken()
+    const resetURL = `${req.protocol}://localhost:3000/resetPassword/${resetToken}`;
+    // const resetURL = `https://secarmanagement.vercel.app/resetPassword/${resetToken}`
+
+    await employee.save({ validateBeforeSave: false })
+
+    try {
+        // SEND EMAIL HERE
+        await new Email(employee, resetURL).resetPassword()
+
+        res.status(200).json({
+            message: 'success'
+        })
+
+    } catch (err) {
+        user.passwordResetToken = undefined;
+        user.passwordResetTokenExpiresIn = undefined;
+        await user.save({ validateBeforeSave: false })
+
+        return next(new AppError('Desila se greška prilikom slanja emaila. Molimo vas pokušajte kasnije.', 500))
+    }
+})
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+    const encryptedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    const employee = await Employee.findOne({
+        passwordResetToken: encryptedToken,
+        passwordResetTokenExpiresIn: { $gt: Date.now() }
+    });
+
+    if (!employee) {
+        return next(new AppError('Token je istekao ili je neispravan.', 400));
+    }
+
+    employee.password = req.body.password;
+    employee.confirmPassword = req.body.confirmPassword;
+    employee.passwordResetToken = undefined;
+    employee.passwordResetTokenExpiresIn = undefined;
+
+    await employee.save({ validateBeforeSave: false });
+
+    createSendToken(employee, 200, res)
+});

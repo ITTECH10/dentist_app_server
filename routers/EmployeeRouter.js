@@ -10,6 +10,12 @@ router.route('/login')
 router.route('/logout')
     .post(authController.logout)
 
+router.route('/forgotPassword')
+    .post(authController.forgotPassword)
+
+router.route('/resetPassword/:token')
+    .post(authController.resetPassword)
+
 router.use(authController.protect)
 router.route('/me')
     .get(employeeController.getLogedInEmployees)

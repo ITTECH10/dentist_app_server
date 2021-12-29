@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
+const crypto = require('crypto')
 
 const employeeSchema = new mongoose.Schema({
     firstName: {
@@ -39,7 +40,13 @@ const employeeSchema = new mongoose.Schema({
     },
     employeeImage: {
         type: String
-    }
+    },
+    passwordResetToken: {
+        type: String
+    },
+    passwordResetTokenExpiresIn: {
+        type: String
+    },
 })
 
 employeeSchema.pre('save', async function (next) {
@@ -51,6 +58,14 @@ employeeSchema.pre('save', async function (next) {
 
 employeeSchema.methods.comparePasswords = async function (candidatePassword, employeePassword) {
     return await bcrypt.compare(candidatePassword, employeePassword)
+};
+
+employeeSchema.methods.createPasswordResetToken = function () {
+    const plainToken = crypto.randomBytes(32).toString('hex');
+    this.passwordResetToken = crypto.createHash('sha256').update(plainToken).digest('hex');
+    this.passwordResetTokenExpiresIn = Date.now() + 10 * 60 * 1000;
+
+    return plainToken;
 };
 
 const Employee = mongoose.model('Employee', employeeSchema)

@@ -87,12 +87,34 @@ exports.getUpcomingAppointments = catchAsync(async (req, res, next) => {
     // DO IT IN AGGREGATION // OR NOT (language agnostic)
     // 1) Get all appointments where date is > NOW and  <= one month from now
     const monthsFromNow = new DateGenerator().monthsFromNow(1)
+    const results = await Appointment.find({ date: { $gte: new Date(), $lte: monthsFromNow } })
 
-    const results = await Appointment.aggregate([
-        {
-            $match: { date: { $gte: new Date(), $lte: monthsFromNow } }
-        }
-    ])
+    // const results = await Appointment.aggregate([
+    //     {
+    //         $match: { date: { $gte: new Date(), $lte: monthsFromNow } }
+    //     },
+    //     {
+    //         $lookup: {
+    //             from: "pacients",
+    //             localField: "pacientId",
+    //             foreignField: "_id",
+    //             as: "pacientName"
+    //         }
+    //     },
+    //     {
+    //         $unwind: {
+    //             path: '$pacientName'
+    //         }
+    //     },
+    //     // {
+    //     //     $sum: { "pacientName": "$pacientName.firstName" + ' ' + "$pacientName.lastName" }
+    //     // }
+    //     {
+    //         $addFields: {
+    //             pacientName: { $concat: ['$pacientName.firstName' + ' ' + ' $pacientName.lastName'] }
+    //         }
+    //     }
+    // ])
 
     res.status(200).json({
         message: 'success',
