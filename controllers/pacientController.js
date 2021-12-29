@@ -129,3 +129,24 @@ exports.deletePacient = catchAsync(async (req, res, next) => {
         message: 'success'
     })
 })
+
+exports.bulkDeletePacients = catchAsync(async (req, res, next) => {
+    const { ids } = req.body
+
+    ids.map(async pacientId => {
+        const pacient = await Pacient.findById(pacientId)
+        const publicId = pacient.pacientImage.split('/')[7].split('.')[0]
+
+        await Pacient.deleteOne({ _id: pacient._id })
+        await cloudinary.api.delete_resources(publicId, { invalidate: true },
+            function (error, result) {
+                if (error) {
+                    console.log(error)
+                }
+            });
+    })
+
+    res.status(204).json({
+        message: 'success'
+    })
+})

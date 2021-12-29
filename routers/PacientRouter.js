@@ -19,11 +19,13 @@ router.route('/')
     .post(commonController.checkForFiles, pacientController.addPacient)
     .get(pacientController.getAllPacients)
 
+router.route('/deleteMultiple')
+    .delete(pacientController.bulkDeletePacients)
+
 router.route('/:pacientId')
     .get(pacientController.getOnePacient)
     .put(commonController.checkForFiles, pacientController.updatePacientBaseInfo)
     .delete(pacientController.deletePacient)
-
 
 // IMPLEMENT LATER AND FIX
 // router.use('/:pacientId/appointments', pacientController.getPacientAppointments)

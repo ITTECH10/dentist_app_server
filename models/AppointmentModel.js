@@ -17,6 +17,9 @@ const appointmentSchema = new mongoose.Schema({
     }
 })
 
+// TTL INDEX
+appointmentSchema.index({ "date": 1 }, { expireAfterSeconds: 10 })
+
 appointmentSchema.pre(/^find/, function (next) {
     this.populate('pacientId', 'firstName lastName')
     next()
