@@ -107,3 +107,24 @@ exports.deleteOrdination = catchAsync(async (req, res, next) => {
         message: 'success'
     })
 })
+
+exports.bulkDeleteOrdinations = catchAsync(async (req, res, next) => {
+    const { ids } = req.body
+
+    ids.map(async ordinationId => {
+        const ordination = await Ordination.findById(ordinationId)
+        await Ordination.deleteOne({ _id: ordination._id })
+
+        const publicId = ordination.image.split('/')[7].split('.')[0]
+        await cloudinary.api.delete_resources(publicId, { invalidate: true },
+            function (error, result) {
+                if (error) {
+                    console.log(error)
+                }
+            });
+    })
+
+    res.status(204).json({
+        message: 'success'
+    })
+})

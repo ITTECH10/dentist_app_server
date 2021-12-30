@@ -11,6 +11,9 @@ router.route('/')
     .get(ordinationsController.getAllOrdinations)
     .post(commonController.checkForFiles, ordinationsController.createOrdination)
 
+router.route('/deleteMultiple')
+    .delete(ordinationsController.bulkDeleteOrdinations)
+
 router.route('/:ordinationId')
     .get(ordinationsController.getOneOrdination)
     .put(commonController.checkForFiles, ordinationsController.updateOrdination)
