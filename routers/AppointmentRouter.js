@@ -15,6 +15,9 @@ router.route('/')
     .get(appointmentController.getAllAppointments)
     .post(appointmentController.createAppointment)
 
+router.route('/deleteMultiple')
+    .delete(appointmentController.bulkDeleteAppointments)
+
 router.route('/:appointmentId')
     .get(appointmentController.getOneAppointment)
     .put(appointmentController.updateAppointment)

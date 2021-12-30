@@ -121,3 +121,15 @@ exports.getUpcomingAppointments = catchAsync(async (req, res, next) => {
         results
     })
 })
+
+exports.bulkDeleteAppointments = catchAsync(async (req, res, next) => {
+    const { ids } = req.body
+
+    ids.map(async appointmentId => {
+        await Appointment.deleteOne({ _id: appointmentId })
+    })
+
+    res.status(204).json({
+        message: 'success'
+    })
+})

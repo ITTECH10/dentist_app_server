@@ -29,6 +29,9 @@ router.route('/signup')
 router.route('/')
     .get(employeeController.getAllEmployees)
 
+router.route('/deleteMultiple')
+    .delete(employeeController.bulkDeleteEmployees)
+
 router.route('/:employeeId')
     .get(employeeController.getOneEmployee)
     .delete(employeeController.deleteEmployee)

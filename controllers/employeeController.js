@@ -105,3 +105,24 @@ exports.deleteEmployee = catchAsync(async (req, res, next) => {
         message: 'success'
     })
 })
+
+exports.bulkDeleteEmployees = catchAsync(async (req, res, next) => {
+    const { ids } = req.body
+
+    ids.map(async employeeId => {
+        const employee = await Employee.findById(employeeId)
+        const publicId = employee.employeeImage.split('/')[7].split('.')[0]
+
+        await Employee.deleteOne({ _id: employee._id })
+        await cloudinary.api.delete_resources(publicId, { invalidate: true },
+            function (error, result) {
+                if (error) {
+                    console.log(error)
+                }
+            });
+    })
+
+    res.status(204).json({
+        message: 'success'
+    })
+})
