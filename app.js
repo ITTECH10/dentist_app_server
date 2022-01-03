@@ -2,15 +2,17 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const AppError = require('./utils/appError')
+//////////////////////////
 const pacientRouter = require('./routers/PacientRouter')
 const employeeRouter = require('./routers/EmployeeRouter')
 const appointmentRouter = require('./routers/AppointmentRouter')
 const diagnosisRouter = require('./routers/DiagnosisRouter')
 const ordinationRouter = require('./routers/OrdinationRouter')
+const globalErrorHandler = require('./controllers/errorController')
+//////////////////////////
 const cookieParser = require('cookie-parser')
 const os = require('os')
 const fileupload = require('express-fileupload')
-
 const origin = process.env.NODE_ENV === 'production' ? 'https://dentist-app-client.vercel.app' : 'http://localhost:3000'
 
 // CORS
@@ -32,5 +34,7 @@ app.use('/api/v1/ordinations', ordinationRouter)
 app.all('*', (req, res, next) => {
     next(new AppError(`The requested url ${req.originalUrl} could not be found.`, 404))
 })
+
+app.use(globalErrorHandler)
 
 module.exports = app
