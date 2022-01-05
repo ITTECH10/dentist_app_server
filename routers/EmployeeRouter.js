@@ -20,6 +20,9 @@ router.use(authController.protect)
 router.route('/me')
     .get(employeeController.getLogedInEmployees)
 
+router.route('/updateMyPassword')
+    .put(authController.updatePassword)
+
 // ROLE PERMISSIONS FOR BELLOW ROUTES
 router.use(authController.restrictTo('director', 'deputy'))
 

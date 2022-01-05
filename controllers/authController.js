@@ -157,3 +157,20 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
     createSendToken(employee, 200, res)
 });
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+    // 1) Get employee from collection
+    const employee = await Employee.findById(req.user._id).select('+password');
+
+    // 2) Check if POSTed current password is correct
+    if (!(await employee.comparePasswords(req.body.currentPassword, employee.password))) {
+        return next(new AppError('Vaša trenutna lozinka je netačna.', 401));
+    }
+
+    // 3) If so, update password
+    employee.password = req.body.password;
+    await employee.save();
+
+    // 4) Log user in, send JWT
+    createSendToken(employee, 200, res);
+});

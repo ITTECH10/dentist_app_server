@@ -29,13 +29,13 @@ app.options('*', cors())
 app.use(helmet())
 
 // Limit requests from same API
-const limiter = rateLimit({
-    max: 200,
-    windowMs: 60 * 60 * 1000,
-    message: 'Previše zahtjeva sa ove IP adrese, molimo vas pokušajte ponovo za 1h!'
-});
+// const limiter = rateLimit({
+//     max: 200,
+//     windowMs: 60 * 60 * 1000,
+//     message: 'Previše zahtjeva sa ove IP adrese, molimo vas pokušajte ponovo za 1h!'
+// });
 
-app.use('/api', limiter);
+// app.use('/api', limiter);
 
 // Parse cookies
 app.use(cookieParser())
