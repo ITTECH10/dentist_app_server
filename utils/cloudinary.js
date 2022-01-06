@@ -11,10 +11,10 @@ exports.uploadFiles = req => {
         return next(new AppError('Molimo vas odaberite sliku sa JPG ili PNG formatom.', 400));
     }
 
-    let temp = req.files.photo.tempFilePath.split('\\')
+    let temp = req.files.photo.tempFilePath.split('/')
     let index = temp.length - 1;
     temp.splice(index, 1, req.files.filename)
-    let joinedTemp = temp.join('\\')
+    let joinedTemp = temp.join('/')
 
     req.files.photo.mv(joinedTemp + filename, (err) => {
         if (err) console.log(err)
